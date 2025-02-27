@@ -1,20 +1,25 @@
 const express = require('express');
 const app = express();
-const { seedElements } = require('./utils');
 
 // Serves Express Yourself website
 app.use(express.static('public'));
 
-const PORT = process.env.PORT || 4001;
+const { getElementById, seedElements } = require('./utils');
 
 const expressions = [];
 seedElements(expressions, 'expressions');
 
-// Get all expressions
+const PORT = process.env.PORT || 4001;
+
 app.get('/expressions', (req, res, next) => {
-  // console.log(req);
-  res.send(expressions)
+  res.send(expressions);
 });
+
+// Add a new call to app.get('/expressions/:id') here
+app.get('/expressions/:id', (req, res, next) => {
+  const response = getElementById(req.params.id, expressions);
+  res.send(response);
+})
 
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);
